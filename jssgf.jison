@@ -16,15 +16,16 @@ function addGameTrees(s, gts){
 %lex
 
 %%
-\s*\(                 return '(';
+\s*"("                return '(';
 ")"                   return ')';
-\s*\;                 return ';';
+\s*";"                return ';';
 "["                   return '[';
-\]\s*                 return ']';
+"]"\s*                return ']';
 ":"                   return ':';
-\\[\r\n]+             return 'SOFT_LINEBREAK';
-\\.                   return 'ESCAPECHAR';
-[^();\[\]]            return 'CHAR';
+\\[\r\n]+            return 'SOFT_LINEBREAK';
+\\.                  return 'ESCAPE_CHAR';
+[A-Z]                 return 'UC_LETTER';
+[^();\[\]]            return 'OTHER_CHAR';
 <<EOF>>               return 'EOF';
 
 /lex
@@ -33,32 +34,37 @@ function addGameTrees(s, gts){
 
 output
 	: collection EOF
-        { return $1; }
+        {
+        /*
+            console.log($1);
+            var n = $1[0];
+            while (n._children.length > 0) {
+            console.log(n);
+            n = n._children[0];
+            } */
+            return $1;
+        }
 	;
 
 collection
 	: gametree
 		{ $$ = [$1]; }
-	| gametree collection
-		{ $2.unshift($1); $$ = $2; }
+	| collection gametree
+		{ $1.push($2); $$ = $1; }
     ;
 
 gametree
     : '(' sequence ')'
 		{ $$ = $2; }
-	| WHITESPACE '(' sequence ')'
-		{ $$ = $3; }
     | '(' sequence gametrees ')'
         { $$ = addGameTrees($2, $3); }
-    | WHITESPACE '(' sequence gametrees ')'
-        { $$ = addGameTrees($3, $4); }
     ;
 
 gametrees
 	: gametree
 		{ $$ = [$1]; }
-	| gametree gametrees
-		{ $2.unshift($1); $$ = $2; }
+	| gametrees gametree
+		{ $1.push($2); $$ = $1; }
 	;
 
 sequence
@@ -76,8 +82,10 @@ node
 	;
 
 propident
-	: text
+	: UC_LETTER
 		{ $$ = $1; }
+    | propident UC_LETTER
+        { $$ = $1 + $2; }
 	;
 
 propvalues
@@ -107,14 +115,16 @@ compose
 	;
 
 text
-	: CHAR
+    : UC_LETTER
+        { $$ = $1; }
+	| OTHER_CHAR
 		{ $$ = $1; }
-	| '\]'
-		{ $$ = ']'; }
-	| text CHAR
+    | text UC_LETTER
+		{ $$ = $1 + $2; }
+	| text OTHER_CHAR
 		{ $$ = $1 + $2; }
 	| text SOFT_LINEBREAK
 		{ $$ = $1; }
-	| text ESCAPECHAR
+	| text ESCAPE_CHAR
 		{ $$ = $1 + $2.slice(1); }
 	;
