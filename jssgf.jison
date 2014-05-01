@@ -1,8 +1,12 @@
-/* description: Parses SGF string and generates corresponding object. */
+/*
+    description: Parses SGF string and generates corresponding object.
+    note1: This parser doesn't interpret PropValue, returns all as text.
+    note2: Yout need at least one PropValues in each Property as I didn't understand elist of PropValue in the SGF specification.
+*/
 
 %{
 /* prologue */
-
+var strict = false; // if true, throw exception when overapping a property in a node.
 function addGameTrees(s, gts){
 	var n = s;
 	while (n._children.length == 1)
@@ -17,8 +21,8 @@ function addGameTrees(s, gts){
 
 %%
 \s*"("                return '(';
-")"                   return ')';
-\s*";"                return ';';
+")"\s*                return ')';
+\s*";"\s*             return ';';
 "["                   return '[';
 "]"\s*                return ']';
 ":"                   return ':';
@@ -41,7 +45,8 @@ output
             while (n._children.length > 0) {
             console.log(n);
             n = n._children[0];
-            } */
+            }
+        */
             return $1;
         }
 	;
@@ -78,7 +83,14 @@ node
 	: ';'
 		{ $$ = {_children: []}; }
 	| node propident propvalues
-		{ $1[$2] = $3; $$ = $1; }
+		{
+            if (strict == true && typeof $1[$2] !== 'undefined') {
+                throw new Error('double properties');
+            } else {
+                $1[$2] = $3;
+                $$ = $1;
+            }
+        }
 	;
 
 propident
@@ -89,7 +101,7 @@ propident
 	;
 
 propvalues
-	: propvalue
+    : propvalue
 		{ $$ = $1; }
 	| propvalues propvalue
 		{ var a; if ($1 instanceof Array) a = $1; else a = [$1]; $$ = a.concat($2); }
