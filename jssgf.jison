@@ -33,7 +33,7 @@ function addGameTrees(s, gts){
 
 output
 	: collection EOF
-        { console.log($1); return $1; }
+        { return $1; }
 	;
 
 collection
