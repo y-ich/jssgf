@@ -21,17 +21,17 @@ function addGameTrees(s, gts){
 %lex
 
 %%
-\s*"("                return '(';
-")"\s*                return ')';
-\s*";"\s*             return ';';
-"["                   return '[';
-"]"\s*                return ']';
-":"                   return ':';
-\\[\r\n]+            return 'SOFT_LINEBREAK';
-\\.                  return 'ESCAPE_CHAR';
-[A-Z]                 return 'UC_LETTER';
-[^();\[\]]            return 'OTHER_CHAR';
-<<EOF>>               return 'EOF';
+\s*"("      return '(';
+")"\s*      return ')';
+\s*";"\s*   return ';';
+"["         return '[';
+"]"\s*      return ']';
+":"         return ':';
+\\[\r\n]+   return 'SOFT_LINEBREAK';
+\\.         return 'ESCAPE_CHAR';
+[A-Z]       return 'UC_LETTER';
+[^();\[\]]  return 'OTHER_CHAR';
+<<EOF>>     return 'EOF';
 
 /lex
 
@@ -116,9 +116,7 @@ propvalues
 	;
 
 propvalue
-	: '[' ']'
-		{ $$ = ''; }
-	| '[' cvaluetype ']'
+	: '[' cvaluetype ']'
 		{ $$ = $2; }
 	;
 
@@ -135,10 +133,8 @@ compose
 	;
 
 text
-    : UC_LETTER
-        { $$ = $1; }
-	| OTHER_CHAR
-		{ $$ = $1; }
+    : /* empty */
+        { $$ = '' }
     | text UC_LETTER
 		{ $$ = $1 + $2; }
 	| text OTHER_CHAR
