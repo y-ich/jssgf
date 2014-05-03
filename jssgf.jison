@@ -7,6 +7,7 @@
 %{
 /* prologue */
 var strict = false; // if true, throw exception when overapping a property in a node.
+var debug = true;
 function addGameTrees(s, gts){
 	var n = s;
 	while (n._children.length == 1)
@@ -39,14 +40,16 @@ function addGameTrees(s, gts){
 output
 	: collection EOF
         {
-        /*
-            console.log($1);
-            var n = $1[0];
-            while (n._children.length > 0) {
-            console.log(n);
-            n = n._children[0];
+            if (debug) {
+                console.log($1);
+                /*
+                var n = $1[0];
+                while (n._children.length > 0) {
+                    console.log(n);
+                    n = n._children[0];
+                }
+                */
             }
-        */
             return $1;
         }
 	;
@@ -82,16 +85,21 @@ sequence
 node
 	: ';'
 		{ $$ = {_children: []}; }
-	| node propident propvalues
+	| node property
 		{
-            if (strict == true && typeof $1[$2] !== 'undefined') {
+            if (strict == true && typeof $1[$2[0]] !== 'undefined') {
                 throw new Error('double properties');
             } else {
-                $1[$2] = $3;
+                $1[$2[0]] = $2[1];
                 $$ = $1;
             }
         }
 	;
+
+property
+    : propident propvalues
+        { $$ = [$1, $2]; }
+    ;
 
 propident
 	: UC_LETTER
