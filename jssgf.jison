@@ -26,6 +26,7 @@ function addGameTrees(s, gts){
 "["             return '[';
 "]"\s*          return ']';
 ":"             return ':';
+\s+             return 'WHITE_SPACE';
 \\[\r\n]+       return 'SOFT_LINEBREAK';
 \\.             return 'ESCAPE_CHAR';
 [A-Z]+(?=\s*\[) return 'PROPIDENT';
@@ -94,6 +95,15 @@ node
                 $$ = $1;
             }
         }
+	| node WHITE_SPACE property
+		{
+            if (strict == true && typeof $1[$3[0]] !== 'undefined') {
+                throw new Error('double properties');
+            } else {
+                $1[$3[0]] = $3[1];
+                $$ = $1;
+            }
+        }
 	;
 
 property
@@ -130,6 +140,8 @@ compose
 text
     : /* empty */
         { $$ = '' }
+    | text WHITE_SPACE
+		{ $$ = $1 + $2; }
     | text EMPTY_PROPIDENT
 		{ $$ = $1 + $2; }
 	| text OTHER_CHAR
