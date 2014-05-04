@@ -1,13 +1,12 @@
 /*
     description: Parses SGF string and generates corresponding object.
     note1: This parser doesn't interpret PropValue, returns all as text.
-    note2: Yout need at least one PropValues in each Property as I didn't understand elist of PropValue in the SGF specification.
 */
 
 %{
 /* prologue */
 var strict = false; // if true, throw exception when overapping a property in a node.
-var debug = true;
+var debug = false;
 function addGameTrees(s, gts){
 	var n = s;
 	while (n._children.length == 1)
@@ -21,17 +20,18 @@ function addGameTrees(s, gts){
 %lex
 
 %%
-\s*"("      return '(';
-")"\s*      return ')';
-\s*";"\s*   return ';';
-"["         return '[';
-"]"\s*      return ']';
-":"         return ':';
-\\[\r\n]+   return 'SOFT_LINEBREAK';
-\\.         return 'ESCAPE_CHAR';
-[A-Z]       return 'UC_LETTER';
-[^();\[\]]  return 'OTHER_CHAR';
-<<EOF>>     return 'EOF';
+\s*"("          return '(';
+")"\s*          return ')';
+\s*";"\s*       return ';';
+"["             return '[';
+"]"\s*          return ']';
+":"             return ':';
+\\[\r\n]+       return 'SOFT_LINEBREAK';
+\\.             return 'ESCAPE_CHAR';
+[A-Z]+(?=\s*\[) return 'PROPIDENT';
+[A-Z]+          return 'EMPTY_PROPIDENT';
+[^();\[\]]      return 'OTHER_CHAR';
+<<EOF>>         return 'EOF';
 
 /lex
 
@@ -97,16 +97,11 @@ node
 	;
 
 property
-    : propident propvalues
+    : EMPTY_PROPIDENT
+        { $$ = [$1, null]; }
+    | PROPIDENT propvalues
         { $$ = [$1, $2]; }
     ;
-
-propident
-	: UC_LETTER
-		{ $$ = $1; }
-    | propident UC_LETTER
-        { $$ = $1 + $2; }
-	;
 
 propvalues
     : propvalue
@@ -135,7 +130,7 @@ compose
 text
     : /* empty */
         { $$ = '' }
-    | text UC_LETTER
+    | text EMPTY_PROPIDENT
 		{ $$ = $1 + $2; }
 	| text OTHER_CHAR
 		{ $$ = $1 + $2; }
