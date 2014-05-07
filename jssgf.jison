@@ -134,13 +134,6 @@ propvalue
 cvaluetype
 	: text
 		{ $$ = $1; }
-	| compose
-		{ $$ = $1; }
-	;
-
-compose
-	: text ':' text
-		{ var o = {}; o[$1] = $2; $$ = o; }
 	;
 
 text
