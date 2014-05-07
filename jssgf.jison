@@ -20,18 +20,17 @@ function addGameTrees(s, gts){
 %lex
 
 %%
-\s*"("          return '(';
-")"\s*          return ')';
+\s*"("\s*       return '(';
+\s*")"\s*       return ')';
 \s*";"\s*       return ';';
-"["             return '[';
+\s*"["          return '[';
 "]"\s*          return ']';
 ":"             return ':';
 \s+             return 'WHITE_SPACE';
 \\[\r\n]+       return 'SOFT_LINEBREAK';
 \\.             return 'ESCAPE_CHAR';
-[A-Z]+(?=\s*\[) return 'PROPIDENT';
-[A-Z]+          return 'EMPTY_PROPIDENT';
-[^();\[\]]      return 'OTHER_CHAR';
+[A-Z]+          return 'MAYBE_PROPIDENT';
+.               return 'OTHER_CHAR';
 <<EOF>>         return 'EOF';
 
 /lex
@@ -107,14 +106,21 @@ node
 	;
 
 property
-    : EMPTY_PROPIDENT
-        { $$ = [$1, null]; }
-    | PROPIDENT propvalues
+    : propident propvalues
         { $$ = [$1, $2]; }
     ;
 
+propident
+    : MAYBE_PROPIDENT
+        { $$ = $1; }
+    | MAYBE_PROPIDENT  WHITE_SPACE
+        { $$ = $1; }
+    ;
+
 propvalues
-    : propvalue
+    : /* empty */
+        { $$ = null; }
+    | propvalue
 		{ $$ = $1; }
 	| propvalues propvalue
 		{ var a; if ($1 instanceof Array) a = $1; else a = [$1]; $$ = a.concat($2); }
@@ -142,7 +148,7 @@ text
         { $$ = '' }
     | text WHITE_SPACE
 		{ $$ = $1 + $2; }
-    | text EMPTY_PROPIDENT
+    | text MAYBE_PROPIDENT
 		{ $$ = $1 + $2; }
 	| text OTHER_CHAR
 		{ $$ = $1 + $2; }
