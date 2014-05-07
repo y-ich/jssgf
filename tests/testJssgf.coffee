@@ -1,3 +1,9 @@
+###
+description: test jssgf.js
+author: ICHIKAWA, Yuji
+copyright: 2014 (C) ICHIKAWA, Yuji (New 3 Rs)
+###
+
 assert = require 'assert'
 parser = require('../jssgf').parser
 

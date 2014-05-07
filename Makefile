@@ -1,4 +1,5 @@
 .SUFFIXES:	.coffee .js
+
 jssgf.js: jssgf.jison
 	jison $<
 

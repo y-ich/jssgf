@@ -1,5 +1,7 @@
 /*
     description: Parses SGF string and generates corresponding object.
+    author: ICHIKAWA, Yuji
+    copyright: 2014 (C) ICHIKAWA, Yuji (New 3 Rs)
     note1: This parser doesn't interpret PropValue, returns all as text.
 */
 
