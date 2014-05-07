@@ -25,7 +25,6 @@ function addGameTrees(s, gts){
 \s*";"\s*       return ';';
 \s*"["          return '[';
 "]"\s*          return ']';
-":"             return ':';
 \s+             return 'WHITE_SPACE';
 \\[\r\n]+       return 'SOFT_LINEBREAK';
 \\.             return 'ESCAPE_CHAR';
