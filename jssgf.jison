@@ -151,3 +151,73 @@ text
 	| text ESCAPE_CHAR
 		{ $$ = $1 + $2.slice(1); }
 	;
+
+%%
+
+var escapePropvalue, gameTree2string, node2string, propvalues2string;
+
+parser.stringify = function(c) {
+  return c.map(gameTree2string).join('');
+};
+
+gameTree2string = function(gameTree) {
+  var e, n, result;
+  result = '(';
+  n = gameTree;
+  while (true) {
+    result += node2string(n);
+    if (n._children.length === 0) {
+      break;
+    } else if (n._children.length === 1) {
+      n = n._children[0];
+    } else {
+      result += ((function() {
+        var _i, _len, _ref, _results;
+        _ref = n._children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          e = _ref[_i];
+          _results.push(gameTree2string(e));
+        }
+        return _results;
+      })()).join('');
+      break;
+    }
+  }
+  return result += ')';
+};
+
+node2string = function(node) {
+  var k, v;
+  return ';' + ((function() {
+    var _results;
+    _results = [];
+    for (k in node) {
+      v = node[k];
+      if (!/^_/.test(k)) {
+        _results.push(k + propvalues2string(v));
+      }
+    }
+    return _results;
+  })()).join('');
+};
+
+propvalues2string = function(propvalues) {
+  var e;
+  if (!(propvalues instanceof Array)) {
+    propvalues = [propvalues];
+  }
+  return ((function() {
+    var _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = propvalues.length; _i < _len; _i++) {
+      e = propvalues[_i];
+      _results.push("[" + (escapePropvalue(e)) + "]");
+    }
+    return _results;
+  })()).join('');
+};
+
+escapePropvalue = function(propvalue) {
+  return propvalue.replace(/([\]\\:])/g, '\\$1');
+};
