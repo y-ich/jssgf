@@ -140,6 +140,14 @@ cvaluetype
 text
     : /* empty */
         { $$ = '' }
+    | text '('
+        { $$ = $1 + yytext }
+    | text ')'
+        { $$ = $1 + yytext }
+    | text ';'
+        { $$ = $1 + yytext }
+    | text '['
+        { $$ = $1 + yytext }
     | text WHITE_SPACE
 		{ $$ = $1 + $2; }
     | text MAYBE_PROPIDENT
