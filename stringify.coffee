@@ -30,4 +30,5 @@ propvalues2string = (propvalues) ->
     ("[#{escapePropvalue e}]" for e in propvalues).join ''
 
 escapePropvalue = (propvalue) ->
-    propvalue.replace /([\]\\:])/g, '\\$1'
+    # propvalue.replace /([\]\\:])/g, '\\$1'
+    propvalue.replace /([\]\\])/g, '\\$1' # do not escape : because it is not interpreted yet.
