@@ -40,10 +40,10 @@ escapePropvalue = (propvalue) ->
     # propvalue.replace /([\]\\:])/g, '\\$1'
     propvalue.replace /([\]\\])/g, '\\$1' # do not escape : because it is not interpreted yet.
 
-parser.isSgf = ->
+parser.isSgf = (sgf) ->
     ### returns true if string sgf is SGF format. ###
     try
-        jssgf.parse sgf
+        parser.parse sgf
         true
     catch e
         false

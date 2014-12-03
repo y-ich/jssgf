@@ -38,3 +38,7 @@ describe 'parser', ->
         it 'should return string', ->
             sgf = '(;FF[4])'
             assert.equal parser.stringify(parser.parse sgf), sgf
+    describe 'isSgf', ->
+        it 'should return true', ->
+            sgf = '(;FF[4])'
+            assert.equal parser.isSgf(sgf), true

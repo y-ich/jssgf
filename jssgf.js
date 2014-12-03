@@ -405,12 +405,12 @@ escapePropvalue = function(propvalue) {
   return propvalue.replace(/([\]\\])/g, '\\$1');
 };
 
-parser.isSgf = function() {
+parser.isSgf = function(sgf) {
 
   /* returns true if string sgf is SGF format. */
   var e;
   try {
-    jssgf.parse(sgf);
+    parser.parse(sgf);
     return true;
   } catch (_error) {
     e = _error;
