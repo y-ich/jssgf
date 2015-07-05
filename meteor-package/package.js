@@ -1,4 +1,5 @@
 Package.describe({
+    name: "new3rs:jssgf",
     summary: "jssgf - SGF parser"
 });
 
