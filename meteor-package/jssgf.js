@@ -446,18 +446,7 @@ SGFNode = (function() {
   function SGFNode() {}
 
   SGFNode.prototype.toString = function() {
-    var k, v;
-    return ';' + ((function() {
-      var results;
-      results = [];
-      for (k in this) {
-        v = this[k];
-        if (!/^_/.test(k)) {
-          results.push(k + propvalues2string(v));
-        }
-      }
-      return results;
-    }).call(this)).join('');
+    return node2string(this);
   };
 
   return SGFNode;
