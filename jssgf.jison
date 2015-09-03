@@ -14,7 +14,7 @@ function addGameTrees(s, gts){
 	while (n._children.length == 1)
 		n = n._children[0];
 	n._children = gts;
-	return n;
+	return s;
 }
 %}
 

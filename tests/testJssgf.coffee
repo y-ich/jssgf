@@ -34,6 +34,19 @@ describe 'parser', ->
             assert.deepEqual parser.parse('(;FF[4]GM[1]EV[\\]])'), [_children: [], FF: '4', GM: '1', EV: ']']
         it 'should treats an escaped ]', ->
             assert.deepEqual parser.parse('(;FF[4]GM[1]EV[()])'), [_children: [], FF: '4', GM: '1', EV: '()']
+        it 'should  an escaped ]', ->
+            assert.deepEqual parser.parse('(;DT[2015-09-03];B[pd](;W[nq])(;W[aa]))'), [_children: [
+                    _children: [
+                            _children: []
+                            W: 'nq'
+                        ,
+                            _children: []
+                            W: 'aa'
+                    ]
+                    B: 'pd'
+                ,
+            ], DT: '2015-09-03']
+
     describe 'stringify', ->
         it 'should return string', ->
             sgf = '(;FF[4])'
