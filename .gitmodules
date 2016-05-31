@@ -1,0 +1,3 @@
+[submodule "meteor-jssgf"]
+	path = meteor-jssgf
+	url = https://github.com/new3Rs/meteor-jssgf.git

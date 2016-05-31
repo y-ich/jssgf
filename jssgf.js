@@ -121,8 +121,10 @@ case 10:
 break;
 case 11:
 
-            if (strict == true && typeof $$[$0-1][$$[$0][0]] !== 'undefined') {
-                throw new Error('double properties');
+            if (typeof $$[$0-1][$$[$0][0]] !== 'undefined') {
+                if (strict) {
+                    throw new Error('double properties');
+                }
             } else {
                 $$[$0-1][$$[$0][0]] = $$[$0][1];
                 this.$ = $$[$0-1];
@@ -131,8 +133,10 @@ case 11:
 break;
 case 12:
 
-            if (strict == true && typeof $$[$0-2][$$[$0][0]] !== 'undefined') {
-                throw new Error('double properties');
+            if (typeof $$[$0-2][$$[$0][0]] !== 'undefined') {
+                if (strict) {
+                    throw new Error('double properties');
+                }
             } else {
                 $$[$0-2][$$[$0][0]] = $$[$0][1];
                 this.$ = $$[$0-2];

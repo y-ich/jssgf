@@ -17,5 +17,5 @@ clean:
 .coffee.js:
 	coffee -bc $<
 
-meteor-package/jssgf.js: jssgf.js
+meteor-jssgf/jssgf.js: jssgf.js
 	sed -e 's/var jssgf/jssgf/' $< > $@

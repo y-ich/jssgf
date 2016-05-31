@@ -88,8 +88,10 @@ node
 		{ $$ = {_children: []}; }
 	| node property
 		{
-            if (strict == true && typeof $1[$2[0]] !== 'undefined') {
-                throw new Error('double properties');
+            if (typeof $1[$2[0]] !== 'undefined') {
+                if (strict) {
+                    throw new Error('double properties');
+                }
             } else {
                 $1[$2[0]] = $2[1];
                 $$ = $1;
@@ -97,8 +99,10 @@ node
         }
 	| node WHITE_SPACE property
 		{
-            if (strict == true && typeof $1[$3[0]] !== 'undefined') {
-                throw new Error('double properties');
+            if (typeof $1[$3[0]] !== 'undefined') {
+                if (strict) {
+                    throw new Error('double properties');
+                }
             } else {
                 $1[$3[0]] = $3[1];
                 $$ = $1;
