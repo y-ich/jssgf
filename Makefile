@@ -1,9 +1,9 @@
 .SUFFIXES:	.coffee .js
 
-jssgf.js: jssgf.jison extension.js
+jssgf.js: jssgf.jison extension.js exports.js
 	cat jssgf.jison extension.js > /tmp/foo.jison
 	jison /tmp/foo.jison -m js -o $@
-
+	cat exports.js >> $@
 tests/jssgf.js: jssgf.jison extension.js
 	cat jssgf.jison extension.js > /tmp/foo.jison
 	jison /tmp/foo.jison -o $@
