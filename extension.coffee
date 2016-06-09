@@ -55,13 +55,10 @@ parser.nthMoveNode = (root, n) ->
     ###
     num = 0
     node = root
-    while node._children.length > 0
-        next = node._children[0]
-        if next.B? or next.W?
+    while node._children.length > 0 and num < n
+        node = node._children[0]
+        if node.B? or node.W?
             num += 1
-            if num >= n
-                break
-        node = next
     node
 
 class SGFNode

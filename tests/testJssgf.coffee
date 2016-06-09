@@ -55,3 +55,13 @@ describe 'parser', ->
         it 'should return true', ->
             sgf = '(;FF[4])'
             assert.equal parser.isSgf(sgf), true
+    describe 'nthMoveNode', ->
+        it 'should return root', ->
+            [root] = parser.parse '(;FF[4]SZ[19];B[aa])'
+            assert.equal parser.nthMoveNode(root, 0), root
+        it 'should return first move node', ->
+            [root] = parser.parse '(;FF[4]SZ[19];B[aa])'
+            assert.equal parser.nthMoveNode(root, 1), root._children[0]
+        it 'should return first move node', ->
+            [root] = parser.parse '(;FF[4]SZ[19];B[aa];W[bb];B[cc];W[dd])'
+            assert.equal parser.nthMoveNode(root, Infinity).W, 'dd'
