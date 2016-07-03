@@ -1,0 +1,25 @@
+{
+  "name": "jssgf",
+  "version": "0.2.1",
+  "description": "jssgf - SGF parser",
+  "main": "jssgf.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y-ich/jssgf.git"
+  },
+  "keywords": [
+    "SGF"
+  ],
+  "author": "ICHIKAWA, Yuji",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/y-ich/jssgf/issues"
+  },
+  "homepage": "https://github.com/y-ich/jssgf#readme"
+}
