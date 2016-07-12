@@ -51,6 +51,9 @@ describe 'parser', ->
         it 'should return string', ->
             sgf = '(;FF[4])'
             assert.equal parser.stringify(parser.parse sgf), sgf
+        it 'should make FF prior', ->
+            sgf = '(;GM[1]FF[4])'
+            assert.equal parser.stringify(parser.parse sgf), '(;FF[4]GM[1])'
     describe 'isSgf', ->
         it 'should return true', ->
             sgf = '(;FF[4])'

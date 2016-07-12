@@ -342,7 +342,7 @@ SGF libarary
  * jssgf.isSgf to check if a string is SGF
  * jssgf.nthMoveNode to get a node of nth move
  */
-var SGFCollection, SGFGameTree, SGFNode, escapePropvalue, gameTree2string, node2string, propvalues2string,
+var EXCEPT, PRIOR, SGFCollection, SGFGameTree, SGFNode, escapePropvalue, gameTree2string, node2string, propvalues2string,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -382,14 +382,25 @@ gameTree2string = function(gameTree) {
   return result += ')';
 };
 
+PRIOR = ['FF', 'GM', 'CA'];
+
+EXCEPT = new RegExp("^(_|" + (PRIOR.join('|')) + ")");
+
 node2string = function(node) {
-  var k, v;
-  return ';' + ((function() {
+  var i, k, len, property, result, v;
+  result = ';';
+  for (i = 0, len = PRIOR.length; i < len; i++) {
+    property = PRIOR[i];
+    if (node[property] != null) {
+      result += property + propvalues2string(node[property]);
+    }
+  }
+  return result + ((function() {
     var results;
     results = [];
     for (k in node) {
       v = node[k];
-      if (!/^_/.test(k)) {
+      if (!EXCEPT.test(k)) {
         results.push(k + propvalues2string(v));
       }
     }

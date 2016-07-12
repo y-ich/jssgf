@@ -29,8 +29,13 @@ gameTree2string = (gameTree) ->
             break
     result += ')'
 
+PRIOR = ['FF', 'GM', 'CA']
+EXCEPT = new RegExp "^(_|#{PRIOR.join '|'})"
 node2string = (node) ->
-    ';' + (k + propvalues2string v for k, v of node when not /^_/.test k).join ''
+    result = ';'
+    for property in PRIOR when node[property]?
+        result += property + propvalues2string node[property]
+    result + (k + propvalues2string v for k, v of node when not EXCEPT.test k).join ''
 
 propvalues2string = (propvalues) ->
     propvalues = [propvalues] unless propvalues instanceof Array
@@ -60,47 +65,3 @@ parser.nthMoveNode = (root, n) ->
         if node.B? or node.W?
             num += 1
     node
-
-class SGFNode
-    toString: ->
-        node2string this
-
-class SGFGameTree extends SGFNode
-    @fromParsed: (gameTree) ->
-        result = new this()
-        for k, v of gameTree when k isnt '_children'
-            result[k] = v
-        for each in gameTree._children
-            result._children.push SGFGameTree.fromParsed each
-        result
-
-    constructor: ->
-        super()
-        @_children = []
-
-    toStringRecursively: ->
-        result = '('
-        node = this
-        loop
-            result += node.toString()
-            if node._children.length == 0
-                break
-            else if node._children.length == 1
-                node = node._children[0]
-            else
-                result += (each.toStringRecursively() for each in node._children).join ''
-                break
-        result += ')'
-
-class SGFCollection extends Array
-    @fromParsed: (collection) ->
-        result = new this()
-        for each in collection
-            result.push SGFGameTree.fromParsed each
-        result
-
-    toString: ->
-        (each.toStringRecursively() for each in this).join('\n')
-
-parser.SGFCollection = SGFCollection
-parser.SGFGameTree = SGFGameTree
