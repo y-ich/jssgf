@@ -48,7 +48,7 @@ escapePropvalue = (propvalue) ->
 parser.isSgf = (sgf) ->
     ### returns true if string sgf is SGF format. ###
     try
-        parser.parse sgf
+        parser.fastParse sgf
         true
     catch e
         false
@@ -65,3 +65,70 @@ parser.nthMoveNode = (root, n) ->
         if node.B? or node.W?
             num += 1
     node
+
+decodeValue = (str) ->
+    ss = str.split '\\\\'
+    decoded = (for e in ss
+        e.replace(/\\(\r\n|\n\r|\r|\n)/g, '')
+            .replace(/\\(\S)/g, '$1')
+            .replace /(?!\r\n|\n\r|\r|\n)\s/g, ' ')
+    decoded.join '\\'
+
+parseValue = (str) ->
+    VALUE = /\[((?:\\]|.)*?)\]\s*/g
+
+    while value = VALUE.exec str
+        value = decodeValue value[1]
+        switch typeof result
+            when 'undefined'
+                result = value
+            when 'string'
+                result = [result, value]
+            else
+                result.push value
+    result
+
+parseNode = (str) ->
+    PROPERTY = ///
+        ([A-Z]+)\s*                   # propIdent
+        ((:?\[(?:(?:\\]|.)*?)\]\s*)+) # propValue
+        ///g
+    result = {}
+    while match = PROPERTY.exec str
+        result[match[1]] = parseValue match[2]
+    result
+
+parseSequence = (str) ->
+    NODE = ///
+        (;\s*                               # node
+            (?:[A-Z]+\s*                    # propIdent
+                (?:\[(?:(?:\\]|.)*?)\]\s*)+ # propValue
+            )+
+        )
+        ///g
+    preroot = {}
+    node = preroot
+    while match = NODE.exec str
+        console.log match[1]
+        n = parseNode match[1]
+        node._children = [n]
+        node = n
+    node._children = []
+    preroot._children
+
+parser.fastParse = (sgf) ->
+    singleSequence = sgf.match ///
+        ^\s*\(\s*
+        (
+            (?:;\s*                             # node
+                (?:[A-Z]+\s*                    # propIdent
+                    (?:\[(?:(?:\\]|.)*?)\]\s*)+ # propValue
+                )+
+            )+
+        )
+        \)\s*$
+        ///
+    if singleSequence?
+        parseSequence singleSequence[1]
+    else
+        parser.parse sgf

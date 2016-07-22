@@ -342,9 +342,7 @@ SGF libarary
  * jssgf.isSgf to check if a string is SGF
  * jssgf.nthMoveNode to get a node of nth move
  */
-var EXCEPT, PRIOR, SGFCollection, SGFGameTree, SGFNode, escapePropvalue, gameTree2string, node2string, propvalues2string,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+var EXCEPT, PRIOR, decodeValue, escapePropvalue, gameTree2string, node2string, parseNode, parseSequence, parseValue, propvalues2string;
 
 parser.stringify = function(c) {
 
@@ -433,7 +431,7 @@ parser.isSgf = function(sgf) {
   /* returns true if string sgf is SGF format. */
   var e, error;
   try {
-    parser.parse(sgf);
+    parser.fastParse(sgf);
     return true;
   } catch (error) {
     e = error;
@@ -459,110 +457,74 @@ parser.nthMoveNode = function(root, n) {
   return node;
 };
 
-SGFNode = (function() {
-  function SGFNode() {}
-
-  SGFNode.prototype.toString = function() {
-    return node2string(this);
-  };
-
-  return SGFNode;
-
-})();
-
-SGFGameTree = (function(superClass) {
-  extend(SGFGameTree, superClass);
-
-  SGFGameTree.fromParsed = function(gameTree) {
-    var each, i, k, len, ref, result, v;
-    result = new this();
-    for (k in gameTree) {
-      v = gameTree[k];
-      if (k !== '_children') {
-        result[k] = v;
-      }
+decodeValue = function(str) {
+  var decoded, e, ss;
+  ss = str.split('\\\\');
+  decoded = (function() {
+    var i, len, results;
+    results = [];
+    for (i = 0, len = ss.length; i < len; i++) {
+      e = ss[i];
+      results.push(e.replace(/\\(\r\n|\n\r|\r|\n)/g, '').replace(/\\(\S)/g, '$1').replace(/(?!\r\n|\n\r|\r|\n)\s/g, ' '));
     }
-    ref = gameTree._children;
-    for (i = 0, len = ref.length; i < len; i++) {
-      each = ref[i];
-      result._children.push(SGFGameTree.fromParsed(each));
-    }
-    return result;
-  };
+    return results;
+  })();
+  return decoded.join('\\');
+};
 
-  function SGFGameTree() {
-    SGFGameTree.__super__.constructor.call(this);
-    this._children = [];
-  }
-
-  SGFGameTree.prototype.toStringRecursively = function() {
-    var each, node, result;
-    result = '(';
-    node = this;
-    while (true) {
-      result += node.toString();
-      if (node._children.length === 0) {
+parseValue = function(str) {
+  var VALUE, result, value;
+  VALUE = /\[((?:\\]|.)*?)\]\s*/g;
+  while (value = VALUE.exec(str)) {
+    value = decodeValue(value[1]);
+    switch (typeof result) {
+      case 'undefined':
+        result = value;
         break;
-      } else if (node._children.length === 1) {
-        node = node._children[0];
-      } else {
-        result += ((function() {
-          var i, len, ref, results;
-          ref = node._children;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            each = ref[i];
-            results.push(each.toStringRecursively());
-          }
-          return results;
-        })()).join('');
+      case 'string':
+        result = [result, value];
         break;
-      }
+      default:
+        result.push(value);
     }
-    return result += ')';
-  };
-
-  return SGFGameTree;
-
-})(SGFNode);
-
-SGFCollection = (function(superClass) {
-  extend(SGFCollection, superClass);
-
-  function SGFCollection() {
-    return SGFCollection.__super__.constructor.apply(this, arguments);
   }
+  return result;
+};
 
-  SGFCollection.fromParsed = function(collection) {
-    var each, i, len, result;
-    result = new this();
-    for (i = 0, len = collection.length; i < len; i++) {
-      each = collection[i];
-      result.push(SGFGameTree.fromParsed(each));
-    }
-    return result;
-  };
+parseNode = function(str) {
+  var PROPERTY, match, result;
+  PROPERTY = /([A-Z]+)\s*((:?\[(?:(?:\\]|.)*?)\]\s*)+)/g;
+  result = {};
+  while (match = PROPERTY.exec(str)) {
+    result[match[1]] = parseValue(match[2]);
+  }
+  return result;
+};
 
-  SGFCollection.prototype.toString = function() {
-    var each;
-    return ((function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = this.length; i < len; i++) {
-        each = this[i];
-        results.push(each.toStringRecursively());
-      }
-      return results;
-    }).call(this)).join('\n');
-  };
+parseSequence = function(str) {
+  var NODE, match, n, node, preroot;
+  NODE = /(;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|.)*?)\]\s*)+)+)/g;
+  preroot = {};
+  node = preroot;
+  while (match = NODE.exec(str)) {
+    console.log(match[1]);
+    n = parseNode(match[1]);
+    node._children = [n];
+    node = n;
+  }
+  node._children = [];
+  return preroot._children;
+};
 
-  return SGFCollection;
-
-})(Array);
-
-parser.SGFCollection = SGFCollection;
-
-parser.SGFGameTree = SGFGameTree;
+parser.fastParse = function(sgf) {
+  var singleSequence;
+  singleSequence = sgf.match(/^\s*\(\s*((?:;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|.)*?)\]\s*)+)+)+)\)\s*$/);
+  if (singleSequence != null) {
+    return parseSequence(singleSequence[1]);
+  } else {
+    return parser.parse(sgf);
+  }
+};
 /* generated by jison-lex 0.3.4 */
 var lexer = (function(){
 var lexer = ({
