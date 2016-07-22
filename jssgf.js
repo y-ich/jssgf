@@ -507,7 +507,6 @@ parseSequence = function(str) {
   preroot = {};
   node = preroot;
   while (match = NODE.exec(str)) {
-    console.log(match[1]);
     n = parseNode(match[1]);
     node._children = [n];
     node = n;
