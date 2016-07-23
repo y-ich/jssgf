@@ -474,7 +474,7 @@ decodeValue = function(str) {
 
 parseValue = function(str) {
   var VALUE, result, value;
-  VALUE = /\[((?:\\]|.)*?)\]\s*/g;
+  VALUE = /\[((?:\\]|[\s\S])*?)\]\s*/g;
   while (value = VALUE.exec(str)) {
     value = decodeValue(value[1]);
     switch (typeof result) {
@@ -493,7 +493,7 @@ parseValue = function(str) {
 
 parseNode = function(str) {
   var PROPERTY, match, result;
-  PROPERTY = /([A-Z]+)\s*((:?\[(?:(?:\\]|.)*?)\]\s*)+)/g;
+  PROPERTY = /([A-Z]+)\s*((:?\[(?:(?:\\]|[\s\S])*?)\]\s*)+)/g;
   result = {};
   while (match = PROPERTY.exec(str)) {
     result[match[1]] = parseValue(match[2]);
@@ -503,7 +503,7 @@ parseNode = function(str) {
 
 parseSequence = function(str) {
   var NODE, match, n, node, preroot;
-  NODE = /(;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|.)*?)\]\s*)+)+)/g;
+  NODE = /(;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|[\s\S])*?)\]\s*)+)*)/g;
   preroot = {};
   node = preroot;
   while (match = NODE.exec(str)) {
@@ -517,7 +517,7 @@ parseSequence = function(str) {
 
 parser.fastParse = function(sgf) {
   var singleSequence;
-  singleSequence = sgf.match(/^\s*\(\s*((?:;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|.)*?)\]\s*)+)+)+)\)\s*$/);
+  singleSequence = sgf.match(/^\s*\(\s*((?:;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|[\s\S])*?)\]\s*)+)*)+)\)\s*$/);
   if (singleSequence != null) {
     return parseSequence(singleSequence[1]);
   } else {

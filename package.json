@@ -1,6 +1,6 @@
 {
   "name": "jssgf",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "jssgf - SGF parser",
   "main": "jssgf.js",
   "directories": {
