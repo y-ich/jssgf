@@ -11,11 +11,11 @@ describe 'parser', ->
     describe 'bug of regular expression in V8', ->
         it 'bracket with linebreak', ->
             bracket = '[\n]'
-            match = bracket.match /\[[\s\S]\]/
+            match = bracket.match /\[[^\]]*\]/
             assert.equal match[0], bracket
         it 'brackets with linebreak', ->
-            a = '[][][][][][][][][][][][][][][][][][][][][][][][][][][][][\n]'.match /(\[[\s\S]*?\])+$/
-            assert.ok true
+            a = '[][][][][][][][][][][][][][][][][][][][][][][][][][][][][\n])'.match /(\[[^\]]*\])+\)$/
+            assert.equal typeof a, 'object'
     describe 'collection', ->
         it 'should return the smallest collection', ->
             assert.deepEqual parser.fastParse('(;)'), [_children: []]
@@ -56,7 +56,13 @@ describe 'parser', ->
             ], DT: '2015-09-03']
         it 'long sequence with linebreak', ->
             a = parser.fastParse '(;A[][][][][][][][][][][][][][][][][][][][][][][][][][][][][\n])'
-            assert.ok true
+            assert.equal typeof a, 'object'
+        it 'wrong sequence with linebreak', ->
+            a = try
+                parser.fastParse '(;A[][][][][][][][][][][][][][][][][][][][][][][][][][][][][\n]'
+            catch e
+                null
+            assert.equal a, null
     describe 'stringify', ->
         it 'should return string', ->
             sgf = '(;FF[4])'

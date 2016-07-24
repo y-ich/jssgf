@@ -75,7 +75,7 @@ decodeValue = (str) ->
     decoded.join '\\'
 
 parseValue = (str) ->
-    VALUE = /\[((?:\\]|[\s\S])*?)\]\s*/g
+    VALUE = /\[((?:\\]|[^\]])*)\]\s*/g
 
     while value = VALUE.exec str
         value = decodeValue value[1]
@@ -91,7 +91,7 @@ parseValue = (str) ->
 parseNode = (str) ->
     PROPERTY = ///
         ([A-Z]+)\s*                   # propIdent
-        ((:?\[(?:(?:\\]|[\s\S])*?)\]\s*)+) # propValue
+        ((:?\[(?:(?:\\]|[^\]])*)\]\s*)+) # propValue
         ///g
     result = {}
     while match = PROPERTY.exec str
@@ -102,7 +102,7 @@ parseSequence = (str) ->
     NODE = ///
         (;\s*                               # node
             (?:[A-Z]+\s*                    # propIdent
-                (?:\[(?:(?:\\]|[\s\S])*?)\]\s*)+ # propValue
+                (?:\[(?:(?:\\]|[^\]])*)\]\s*)+ # propValue
             )*
         )
         ///g
@@ -121,7 +121,7 @@ parser.fastParse = (sgf) ->
         (
             (?:;\s*                             # node
                 (?:[A-Z]+\s*                    # propIdent
-                    (?:\[(?:(?:\\]|[\s\S])*?)\]\s*)+ # propValue
+                    (?:\[(?:(?:\\]|[^\]])*)\]\s*)+ # propValue
                 )*
             )+
         )
