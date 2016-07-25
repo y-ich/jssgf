@@ -59,6 +59,13 @@ describe 'parser', ->
             catch e
                 null
             assert.equal a, null
+    describe 'value', ->
+        it '(', ->
+            assert.deepEqual parser.parse('(;GC[(])'), [_children: [], GC: '(']
+        it '[', ->
+            assert.deepEqual parser.parse('(;GC[[])'), [_children: [], GC: '[']
+        it ']', ->
+            assert.deepEqual parser.parse('(;GC[\\]])'), [_children: [], GC: ']']
     describe 'stringify', ->
         it 'should return string', ->
             sgf = '(;FF[4])'
