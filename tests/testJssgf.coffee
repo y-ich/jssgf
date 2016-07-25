@@ -24,10 +24,6 @@ describe 'parser', ->
         it 'should includes plural game tree', ->
             assert.deepEqual parser.fastParse('(;)\n(;)'), [{_children: []}, {_children: []}]
     describe 'game tree', ->
-        it 'should includes empty value of property ', ->
-            assert.deepEqual parser.fastParse('(;TB)'), [_children: [], TB: null]
-        it 'should includes empty value of property ', ->
-            assert.deepEqual parser.fastParse('(;TB FF[4])'), [_children: [], TB: null, FF: '4']
         it 'should includes a normal game tree', ->
             assert.deepEqual parser.fastParse('(;FF[4])'), [_children: [], FF: '4']
         it 'should includes a normal game tree', ->

@@ -123,9 +123,7 @@ propident
     ;
 
 propvalues
-    : /* empty */
-        { $$ = null; }
-    | propvalue
+    : propvalue
 		{ $$ = $1; }
 	| propvalues propvalue
 		{ var a; if ($1 instanceof Array) a = $1; else a = [$1]; $$ = a.concat($2); }
