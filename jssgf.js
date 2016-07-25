@@ -72,31 +72,19 @@
   }
 */
 var jssgf = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,4],$V1=[5,7],$V2=[1,9],$V3=[7,9],$V4=[1,17],$V5=[7,9,12,14,17],$V6=[5,7,9],$V7=[1,23],$V8=[7,9,12,14,17,19],$V9=[7,9,12,14,17,19,21,23,24,25];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,4],$V1=[5,7],$V2=[1,9],$V3=[7,9],$V4=[7,9,12,14],$V5=[5,7,9],$V6=[1,20],$V7=[7,9,12,14,17];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"output":3,"collection":4,"EOF":5,"gametree":6,"(":7,"sequence":8,")":9,"gametrees":10,"node":11,";":12,"property":13,"WHITE_SPACE":14,"propident":15,"propvalues":16,"MAYBE_PROPIDENT":17,"propvalue":18,"[":19,"cvaluetype":20,"]":21,"text":22,"OTHER_CHAR":23,"SOFT_LINEBREAK":24,"ESCAPE_CHAR":25,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",7:"(",9:")",12:";",14:"WHITE_SPACE",17:"MAYBE_PROPIDENT",19:"[",21:"]",23:"OTHER_CHAR",24:"SOFT_LINEBREAK",25:"ESCAPE_CHAR"},
-productions_: [0,[3,2],[4,1],[4,2],[6,3],[6,4],[10,1],[10,2],[8,1],[8,2],[11,1],[11,2],[11,3],[13,2],[15,1],[15,2],[16,0],[16,1],[16,2],[18,3],[20,1],[22,0],[22,2],[22,2],[22,2],[22,2],[22,2],[22,2],[22,2],[22,2],[22,2]],
+symbols_: {"error":2,"output":3,"collection":4,"EOF":5,"gametree":6,"(":7,"sequence":8,")":9,"gametrees":10,"node":11,";":12,"property":13,"PROPIDENT":14,"propvalues":15,"propvalue":16,"CVALUETYPE":17,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",7:"(",9:")",12:";",14:"PROPIDENT",17:"CVALUETYPE"},
+productions_: [0,[3,2],[4,1],[4,2],[6,3],[6,4],[10,1],[10,2],[8,1],[8,2],[11,1],[11,2],[13,2],[15,1],[15,2],[16,0],[16,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
-
-            if (debug) {
-                console.log($$[$0-1]);
-                /*
-                var n = $$[$0-1][0];
-                while (n._children.length > 0) {
-                    console.log(n);
-                    n = n._children[0];
-                }
-                */
-            }
-            return $$[$0-1];
-        
+ return $$[$0-1]; 
 break;
 case 2: case 6:
  this.$ = [$$[$0]]; 
@@ -104,13 +92,13 @@ break;
 case 3: case 7:
  $$[$0-1].push($$[$0]); this.$ = $$[$0-1]; 
 break;
-case 4: case 15: case 19: case 29:
+case 4:
  this.$ = $$[$0-1]; 
 break;
 case 5:
  this.$ = addGameTrees($$[$0-2], $$[$0-1]); 
 break;
-case 8: case 14: case 17: case 20:
+case 8: case 13:
  this.$ = $$[$0]; 
 break;
 case 9:
@@ -132,41 +120,20 @@ case 11:
         
 break;
 case 12:
-
-            if (typeof $$[$0-2][$$[$0][0]] !== 'undefined') {
-                if (strict) {
-                    throw new Error('double properties');
-                }
-            } else {
-                $$[$0-2][$$[$0][0]] = $$[$0][1];
-                this.$ = $$[$0-2];
-            }
-        
-break;
-case 13:
  this.$ = [$$[$0-1], $$[$0]]; 
 break;
-case 16:
- this.$ = null; 
-break;
-case 18:
+case 14:
  var a; if ($$[$0-1] instanceof Array) a = $$[$0-1]; else a = [$$[$0-1]]; this.$ = a.concat($$[$0]); 
 break;
-case 21:
- this.$ = '' 
+case 15:
+ this.$ = ''; 
 break;
-case 22: case 23: case 24: case 25:
- this.$ = $$[$0-1] + yytext 
-break;
-case 26: case 27: case 28:
- this.$ = $$[$0-1] + $$[$0]; 
-break;
-case 30:
- this.$ = $$[$0-1] + $$[$0].slice(1); 
+case 16:
+ this.$ = decodeValue($$[$0]); 
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:$V0},{1:[3]},{5:[1,5],6:6,7:$V0},o($V1,[2,2]),{8:7,11:8,12:$V2},{1:[2,1]},o($V1,[2,3]),{6:12,7:$V0,9:[1,10],10:11},o($V3,[2,8],{11:8,8:13,13:14,15:16,12:$V2,14:[1,15],17:$V4}),o($V5,[2,10]),o($V6,[2,4]),{6:19,7:$V0,9:[1,18]},o($V3,[2,6]),o($V3,[2,9]),o($V5,[2,11]),{13:20,15:16,17:$V4},o($V5,[2,16],{16:21,18:22,19:$V7}),o([7,9,12,17,19],[2,14],{14:[1,24]}),o($V6,[2,5]),o($V3,[2,7]),o($V5,[2,12]),o($V5,[2,13],{18:25,19:$V7}),o($V8,[2,17]),o($V9,[2,21],{20:26,22:27}),o($V8,[2,15]),o($V8,[2,18]),{21:[1,28]},{7:[1,29],9:[1,30],12:[1,31],14:[1,33],17:[1,34],19:[1,32],21:[2,20],23:[1,35],24:[1,36],25:[1,37]},o($V8,[2,19]),o($V9,[2,22]),o($V9,[2,23]),o($V9,[2,24]),o($V9,[2,25]),o($V9,[2,26]),o($V9,[2,27]),o($V9,[2,28]),o($V9,[2,29]),o($V9,[2,30])],
+table: [{3:1,4:2,6:3,7:$V0},{1:[3]},{5:[1,5],6:6,7:$V0},o($V1,[2,2]),{8:7,11:8,12:$V2},{1:[2,1]},o($V1,[2,3]),{6:12,7:$V0,9:[1,10],10:11},o($V3,[2,8],{11:8,8:13,13:14,12:$V2,14:[1,15]}),o($V4,[2,10]),o($V5,[2,4]),{6:17,7:$V0,9:[1,16]},o($V3,[2,6]),o($V3,[2,9]),o($V4,[2,11]),o($V4,[2,15],{15:18,16:19,17:$V6}),o($V5,[2,5]),o($V3,[2,7]),o($V4,[2,12],{16:21,17:$V6}),o($V7,[2,13]),o($V7,[2,16]),o($V7,[2,14])],
 defaultActions: {5:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
@@ -321,7 +288,6 @@ parse: function parse(input) {
 
 /* prologue */
 var strict = false; // if true, throw exception when overlapping a property in a node.
-var debug = false;
 function addGameTrees(s, gts){
 	var n = s;
 	while (n._children.length == 1)
@@ -329,6 +295,21 @@ function addGameTrees(s, gts){
 	n._children = gts;
 	return s;
 }
+
+function decodeValue(str) {
+  var decoded, e, ss;
+  ss = str.split('\\\\');
+  decoded = (function() {
+    var i, len, results;
+    results = [];
+    for (i = 0, len = ss.length; i < len; i++) {
+      e = ss[i];
+      results.push(e.replace(/\\(\r\n|\n\r|\r|\n)/g, '').replace(/\\(\S)/g, '$1').replace(/(?!\r\n|\n\r|\r|\n)\s/g, ' '));
+    }
+    return results;
+  })();
+  return decoded.join('\\');
+};
 
 // Generated by CoffeeScript 1.10.0
 
@@ -342,7 +323,7 @@ SGF libarary
  * jssgf.isSgf to check if a string is SGF
  * jssgf.nthMoveNode to get a node of nth move
  */
-var EXCEPT, PRIOR, decodeValue, escapePropvalue, gameTree2string, node2string, parseNode, parseSequence, parseValue, propvalues2string;
+var EXCEPT, PRIOR, escapePropvalue, gameTree2string, node2string, parseNode, parseSequence, parseValue, propvalues2string;
 
 parser.stringify = function(c) {
 
@@ -457,24 +438,9 @@ parser.nthMoveNode = function(root, n) {
   return node;
 };
 
-decodeValue = function(str) {
-  var decoded, e, ss;
-  ss = str.split('\\\\');
-  decoded = (function() {
-    var i, len, results;
-    results = [];
-    for (i = 0, len = ss.length; i < len; i++) {
-      e = ss[i];
-      results.push(e.replace(/\\(\r\n|\n\r|\r|\n)/g, '').replace(/\\(\S)/g, '$1').replace(/(?!\r\n|\n\r|\r|\n)\s/g, ' '));
-    }
-    return results;
-  })();
-  return decoded.join('\\');
-};
-
 parseValue = function(str) {
   var VALUE, result, value;
-  VALUE = /\[((?:\\]|[\s\S])*?)\]\s*/g;
+  VALUE = /\[((?:\\]|[^\]])*)\]\s*/g;
   while (value = VALUE.exec(str)) {
     value = decodeValue(value[1]);
     switch (typeof result) {
@@ -493,7 +459,7 @@ parseValue = function(str) {
 
 parseNode = function(str) {
   var PROPERTY, match, result;
-  PROPERTY = /([A-Z]+)\s*((:?\[(?:(?:\\]|[\s\S])*?)\]\s*)+)/g;
+  PROPERTY = /([A-Z]+)\s*((:?\[(?:(?:\\]|[^\]])*)\]\s*)+)/g;
   result = {};
   while (match = PROPERTY.exec(str)) {
     result[match[1]] = parseValue(match[2]);
@@ -503,7 +469,7 @@ parseNode = function(str) {
 
 parseSequence = function(str) {
   var NODE, match, n, node, preroot;
-  NODE = /(;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|[\s\S])*?)\]\s*)+)*)/g;
+  NODE = /(;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|[^\]])*)\]\s*)+)*)/g;
   preroot = {};
   node = preroot;
   while (match = NODE.exec(str)) {
@@ -517,7 +483,7 @@ parseSequence = function(str) {
 
 parser.fastParse = function(sgf) {
   var singleSequence;
-  singleSequence = sgf.match(/^\s*\(\s*((?:;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|[\s\S])*?)\]\s*)+)*)+)\)\s*$/);
+  singleSequence = sgf.match(/^\s*\(\s*((?:;\s*(?:[A-Z]+\s*(?:\[(?:(?:\\]|[^\]])*)\]\s*)+)*)+)\)\s*$/);
   if (singleSequence != null) {
     return parseSequence(singleSequence[1]);
   } else {
@@ -852,32 +818,28 @@ options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
-case 0:return 7;
+case 0:/* skip whitespace */
 break;
-case 1:return 9;
+case 1:return 7;
 break;
-case 2:return 12;
+case 2:return 9;
 break;
-case 3:return 19;
+case 3:return 12;
 break;
-case 4:return 21;
+case 4:return 14;
 break;
-case 5:return 14;
+case 5:this.begin('CVALUETYPE');
 break;
-case 6:return 24;
+case 6:this.popState();
 break;
-case 7:return 25;
+case 7:return 17;
 break;
-case 8:return 17;
-break;
-case 9:return 23;
-break;
-case 10:return 5;
+case 8:return 5;
 break;
 }
 },
-rules: [/^(?:\s*\(\s*)/,/^(?:\s*\)\s*)/,/^(?:\s*;\s*)/,/^(?:\s*\[)/,/^(?:\]\s*)/,/^(?:\s+)/,/^(?:\\[\r\n]+)/,/^(?:\\.)/,/^(?:[A-Z]+)/,/^(?:.)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10],"inclusive":true}}
+rules: [/^(?:\s+)/,/^(?:\()/,/^(?:\))/,/^(?:;)/,/^(?:[A-Z]+)/,/^(?:\[)/,/^(?:\])/,/^(?:(\\\]|[^\]])*)/,/^(?:$)/],
+conditions: {"CVALUETYPE":{"rules":[6,7],"inclusive":false},"INITIAL":{"rules":[0,1,2,3,4,5,8],"inclusive":true}}
 });
 return lexer;
 })();

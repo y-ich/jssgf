@@ -8,7 +8,6 @@
 %{
 /* prologue */
 var strict = false; // if true, throw exception when overlapping a property in a node.
-var debug = false;
 function addGameTrees(s, gts){
 	var n = s;
 	while (n._children.length == 1)
@@ -16,23 +15,38 @@ function addGameTrees(s, gts){
 	n._children = gts;
 	return s;
 }
+
+function decodeValue(str) {
+  var decoded, e, ss;
+  ss = str.split('\\\\');
+  decoded = (function() {
+    var i, len, results;
+    results = [];
+    for (i = 0, len = ss.length; i < len; i++) {
+      e = ss[i];
+      results.push(e.replace(/\\(\r\n|\n\r|\r|\n)/g, '').replace(/\\(\S)/g, '$1').replace(/(?!\r\n|\n\r|\r|\n)\s/g, ' '));
+    }
+    return results;
+  })();
+  return decoded.join('\\');
+};
 %}
 
 /* lexical grammar */
 %lex
 
+%x CVALUETYPE
+
 %%
-\s*"("\s*       return '(';
-\s*")"\s*       return ')';
-\s*";"\s*       return ';';
-\s*"["          return '[';
-"]"\s*          return ']';
-\s+             return 'WHITE_SPACE';
-\\[\r\n]+       return 'SOFT_LINEBREAK';
-\\.             return 'ESCAPE_CHAR';
-[A-Z]+          return 'MAYBE_PROPIDENT';
-.               return 'OTHER_CHAR';
-<<EOF>>         return 'EOF';
+\s+                         /* skip whitespace */
+"("                         return '(';
+")"                         return ')';
+";"                         return ';';
+[A-Z]+                      return 'PROPIDENT';
+"["                         this.begin('CVALUETYPE');
+<CVALUETYPE>"]"             this.popState();
+<CVALUETYPE>(\\\]|[^\]])*   return 'CVALUETYPE';
+<<EOF>>                     return 'EOF';
 
 /lex
 
@@ -40,19 +54,7 @@ function addGameTrees(s, gts){
 
 output
 	: collection EOF
-        {
-            if (debug) {
-                console.log($1);
-                /*
-                var n = $1[0];
-                while (n._children.length > 0) {
-                    console.log(n);
-                    n = n._children[0];
-                }
-                */
-            }
-            return $1;
-        }
+        { return $1; }
 	;
 
 collection
@@ -97,29 +99,11 @@ node
                 $$ = $1;
             }
         }
-	| node WHITE_SPACE property
-		{
-            if (typeof $1[$3[0]] !== 'undefined') {
-                if (strict) {
-                    throw new Error('double properties');
-                }
-            } else {
-                $1[$3[0]] = $3[1];
-                $$ = $1;
-            }
-        }
 	;
 
 property
-    : propident propvalues
+    : PROPIDENT propvalues
         { $$ = [$1, $2]; }
-    ;
-
-propident
-    : MAYBE_PROPIDENT
-        { $$ = $1; }
-    | MAYBE_PROPIDENT  WHITE_SPACE
-        { $$ = $1; }
     ;
 
 propvalues
@@ -130,36 +114,10 @@ propvalues
 	;
 
 propvalue
-	: '[' cvaluetype ']'
-		{ $$ = $2; }
-	;
-
-cvaluetype
-	: text
-		{ $$ = $1; }
-	;
-
-text
-    : /* empty */
-        { $$ = '' }
-    | text '('
-        { $$ = $1 + yytext }
-    | text ')'
-        { $$ = $1 + yytext }
-    | text ';'
-        { $$ = $1 + yytext }
-    | text '['
-        { $$ = $1 + yytext }
-    | text WHITE_SPACE
-		{ $$ = $1 + $2; }
-    | text MAYBE_PROPIDENT
-		{ $$ = $1 + $2; }
-	| text OTHER_CHAR
-		{ $$ = $1 + $2; }
-	| text SOFT_LINEBREAK
-		{ $$ = $1; }
-	| text ESCAPE_CHAR
-		{ $$ = $1 + $2.slice(1); }
+    :  /* empty */
+        { $$ = ''; }
+	| CVALUETYPE
+		{ $$ = decodeValue($1); }
 	;
 
 %%

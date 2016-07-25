@@ -66,14 +66,6 @@ parser.nthMoveNode = (root, n) ->
             num += 1
     node
 
-decodeValue = (str) ->
-    ss = str.split '\\\\'
-    decoded = (for e in ss
-        e.replace(/\\(\r\n|\n\r|\r|\n)/g, '')
-            .replace(/\\(\S)/g, '$1')
-            .replace /(?!\r\n|\n\r|\r|\n)\s/g, ' ')
-    decoded.join '\\'
-
 parseValue = (str) ->
     VALUE = /\[((?:\\]|[^\]])*)\]\s*/g
 
