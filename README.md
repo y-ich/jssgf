@@ -22,6 +22,7 @@ console.log(jssgf.fastParse('(;C[example])'));
 ##Note
 ### ValueType
 No support of various ValueTypes and Compose. All PropValues are as Text.
+
 ### Compilation
 When you compile jssgf.jison, you will encounter the message
 ```
@@ -34,5 +35,6 @@ Conflict in grammar: multiple actions possible when lookahead token is WHITE_SPA
 ...
 ```
 But jssgf.js should have been generated. Jison resolves the conflicts with higher priority to a shift.
+
 ##License
 MIT
