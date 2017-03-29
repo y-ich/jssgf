@@ -87,3 +87,8 @@ describe 'parser', ->
         it 'should return first move node', ->
             [root] = parser.parse '(;FF[4]SZ[19];B[aa];W[bb];B[cc];W[dd])'
             assert.equal parser.nthMoveNode(root, Infinity).W, 'dd'
+    describe 'oppoentOf', ->
+        it 'should return opponent', ->
+            assert.equal parser.opponentOf('B'), 'W'
+        it 'should return opponent', ->
+            assert.equal parser.opponentOf('W'), 'B'

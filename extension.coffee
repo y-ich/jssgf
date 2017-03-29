@@ -53,6 +53,15 @@ parser.isSgf = (sgf) ->
     catch e
         false
 
+parser.opponentOf = (color) ->
+    switch color
+        when 'B'
+            return 'W'
+        when 'W'
+            return 'B'
+        else
+            throw new Error 'illegal argument'
+
 parser.nthMoveNode = (root, n) ->
     ###
     returns a node of primary nth move
