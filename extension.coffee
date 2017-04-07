@@ -62,6 +62,18 @@ parser.opponentOf = (color) ->
         else
             throw new Error 'illegal argument'
 
+parser.nextColor = (node) ->
+    if node.B?
+        'W'
+    else if node.W?
+        'B'
+    else if node.HA? # HA should be >= 2
+        'W'
+    else if node.PL?
+        node.PL
+    else
+        'B'
+
 parser.nthMoveNode = (root, n) ->
     ###
     returns a node of primary nth move

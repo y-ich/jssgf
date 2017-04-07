@@ -431,6 +431,20 @@ parser.opponentOf = function(color) {
   }
 };
 
+parser.nextColor = function(node) {
+  if (node.B != null) {
+    return 'W';
+  } else if (node.W != null) {
+    return 'B';
+  } else if (node.HA != null) {
+    return 'W';
+  } else if (node.PL != null) {
+    return node.PL;
+  } else {
+    return 'B';
+  }
+};
+
 parser.nthMoveNode = function(root, n) {
 
   /*
