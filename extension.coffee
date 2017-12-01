@@ -81,11 +81,13 @@ parser.nthMoveNode = (root, n) ->
     ###
     num = 0
     node = root
+    moveNode = root
     while node._children.length > 0 and num < n
         node = node._children[0]
         if node.B? or node.W?
+            moveNode = node
             num += 1
-    node
+    moveNode
 
 parseValue = (str) ->
     VALUE = /\[((?:\\]|[^\]])*)\]\s*/g

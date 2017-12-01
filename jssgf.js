@@ -451,16 +451,18 @@ parser.nthMoveNode = function(root, n) {
   returns a node of primary nth move
   if n is larger than total moves, returns the last move
    */
-  var node, num;
+  var moveNode, node, num;
   num = 0;
   node = root;
+  moveNode = root;
   while (node._children.length > 0 && num < n) {
     node = node._children[0];
     if ((node.B != null) || (node.W != null)) {
+      moveNode = node;
       num += 1;
     }
   }
-  return node;
+  return moveNode;
 };
 
 parseValue = function(str) {
